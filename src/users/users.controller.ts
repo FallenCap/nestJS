@@ -1,45 +1,29 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  ParseIntPipe,
-  ValidationPipe
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Controller('users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) {};
+    constructor(private readonly userService: UsersService) {}
 
-  @Get()
-  findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-    return this.usersService.findAll(role);
-  }
+    @Post('createUser')
+    async createUser(@Req() req: Request): Promise<any> {
+        try {
+            const result = await this.userService.createUser(req);
+            console.log(result);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
-  }
-
-  @Post()
-  create(@Body(ValidationPipe) user: CreateUserDto) {
-    return this.usersService.create(user);
-  }
-
-  @Patch(':id')
-  updateById(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) userUpdate: UpdateUserDto) {
-    return this.usersService.update(id, userUpdate);
-  }
-
-  @Delete(':id')
-  deleteById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.delete(id);
-  }
+    @Get('getUser/:id')
+    async getUserByUserId(@Param('id', ParseIntPipe) userId: number): Promise<any> {
+        try {
+            const result = await this.userService.getUserByUserId(userId);
+            console.log(result);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
 }
