@@ -1,13 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Sequelize, QueryTypes } from 'sequelize';
+import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
     constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
-    async createUser(req: any): Promise<any> {
+    async createUser(user: CreateUserDto): Promise<any> {
         try {
-            const {firstName, lastName, email, mobileNumber} = req.body;
+            const {firstName, lastName, email, mobileNumber} = user;
             const procedureName: string = 'usp_update_user';
             const result  = await this.sequelize.query(`CALL ${procedureName}(:firstName, :lastName, :email, :mobileNumber)`, {
                 replacements: {
