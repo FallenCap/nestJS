@@ -8,9 +8,14 @@ import {
   Post,
   ValidationPipe,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import {
+  successResponseWithData,
+  successResponseForNewEntry,
+} from 'src/helpers/apiResponse';
 // import { Request } from 'express';
 
 @Controller('users')
@@ -26,9 +31,14 @@ export class UsersController {
   ): Promise<any> {
     try {
       const result = await this.userService.createUser(user);
-      console.log(result);
+
+      if (result[0].userId) {
+        return successResponseForNewEntry('User Created Sucessfully.', result[0]);
+      } else {
+        throw new ForbiddenException('Error while updating record!');
+      }
     } catch (error) {
-      console.log('Error: ', error);
+      throw error;
     }
   }
 
@@ -42,12 +52,14 @@ export class UsersController {
   ): Promise<any> {
     try {
       const result = await this.userService.getUserByUserId(userId);
-      
-      if (result?.length === 0) {
-        return new NotFoundException('User not found!');
+
+      if (result && result.length > 0) {
+        return successResponseWithData('User Found.', result[0]);
+      } else {
+        throw new NotFoundException('User not found!');
       }
     } catch (error) {
-      console.log('Error: ', error);
+      throw error;
     }
   }
 }

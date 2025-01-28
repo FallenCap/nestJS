@@ -34,7 +34,7 @@ export class UsersService {
                 replacements: {userId},
                 type: QueryTypes.RAW
             });
-
+            
             return result
         } catch (error) {
             throw error;
