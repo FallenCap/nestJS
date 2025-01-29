@@ -11,47 +11,41 @@ import {
 @Table({
   timestamps: false,
 })
-export class Users extends Model {
+export class ErrorLog extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column({
     type: DataType.INTEGER,
   })
-  userId: number;
+  logId: number;
 
   @AllowNull(false)
   @Column({
     type: DataType.STRING,
   })
-  firstName: string;
+  controllerName: string;
 
   @AllowNull(false)
   @Column({
     type: DataType.STRING,
   })
-  lastName: string;
+  routeName: string;
 
   @AllowNull(false)
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
   })
-  email: string;
+  inputParameter: string;
 
   @AllowNull(false)
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
   })
-  mobileNumber: string;
+  errorMessage: string;
 
   @AllowNull(false)
   @Column({
     type: DataType.DATE,
   })
   createdAt: Date;
-
-  @AllowNull(true)
-  @Column({
-    type: DataType.DATE,
-  })
-  updatedAt: Date;
 }

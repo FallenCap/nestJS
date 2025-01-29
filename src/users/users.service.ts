@@ -1,25 +1,15 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { Sequelize, QueryTypes } from 'sequelize';
+import { Injectable} from '@nestjs/common';
 import { CreateUserDto } from './dto/user.dto';
+import { UserData } from './user.data';
 
 @Injectable()
 export class UsersService {
-    constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
+    constructor(private readonly userData: UserData) {}
 
     async createUser(user: CreateUserDto): Promise<any> {
         try {
-            const {firstName, lastName, email, mobileNumber} = user;
-            const procedureName: string = 'usp_update_user';
-            const result  = await this.sequelize.query(`CALL ${procedureName}(:firstName, :lastName, :email, :mobileNumber)`, {
-                replacements: {
-                    firstName,
-                    lastName,
-                    email,
-                    mobileNumber
-                },
-                type: QueryTypes.RAW
-            });
-            
+            const result = await this.userData.createUser(user);
+
             return result;
         } catch (error) {
             throw error;
@@ -28,14 +18,9 @@ export class UsersService {
 
     async getUserByUserId(userId: number): Promise<any> {
         try {
-            const procedureName = 'usp_get_user_by_userId'
+            const result = await this.userData.getUserByUserId(userId);
 
-            const result = await this.sequelize.query(`CALL ${procedureName}(:userId)`, {
-                replacements: {userId},
-                type: QueryTypes.RAW
-            });
-            
-            return result
+            return result;
         } catch (error) {
             throw error;
         }
